@@ -40,7 +40,7 @@ export default {
   timezone: process.env.TIMEZONE || "UTC",
   GIST_URL: process.env.GIST_URL || "",
   MONGODB_URI: process.env.MONGODB_URI || "",
-  WORK_TYPE: process.env.WORK_TYPE || "public",
+  WORK_TYPE: process.env.WORK_TYPE || "public", // public par défaut
   STATUS_REACT: isTrue(process.env.STATUS_REACT) || false,
   AUTH_DIR,
 };
