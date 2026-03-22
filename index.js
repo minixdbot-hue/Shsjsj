@@ -23,6 +23,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Servir les fichiers statiques du dossier public
+app.use(express.static(path.join(__dirname, "public")));
+
 // ensure sessions dir exists
 const SESSIONS_DIR = path.join(process.cwd(), "sessions");
 await fs.mkdirp(SESSIONS_DIR);
@@ -145,9 +148,9 @@ app.get("/sessions", (req, res) => {
   res.json({ sessions: manager.list() });
 });
 
-// health
+// Frontend — sert index.html depuis /public
 app.get("/", (req, res) =>
-  res.send("Baileys Multi-session Server (pair-code ready)")
+  res.sendFile(path.join(__dirname, "public", "index.html"))
 );
 // graceful shutdown
 process.on("SIGINT", async () => {
