@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INCONNU BOT — Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b10;
+      --surface: #0d1117;
+      --border: #1e2733;
+      --accent: #00ff9d;
+      --accent2: #00c97a;
+      --text: #e0e8f0;
+      --muted: #4a5568;
+      --danger: #ff4d6d;
+      --warn: #ffb347;
+      --glow: 0 0 20px rgba(0,255,157,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,157,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,157,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,11,16,0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-dot {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    .logo-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .logo-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .status-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--accent);
+      border-radius: 2rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 3rem 0 3.5rem;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+      text-shadow: 0 0 30px rgba(0,255,157,0.3);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 440px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.7s ease both;
+      transition: border-color 0.3s;
+    }
+
+    .card:hover { border-color: rgba(0,255,157,0.2); }
+
+    .card-title {
+      font-size: 0.7rem;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── PAIR FORM ── */
+    .pair-form {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .pair-form input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .pair-form input:focus {
+      border-color: var(--accent);
+      box-shadow: var(--glow);
+    }
+
+    .pair-form input::placeholder { color: var(--muted); }
+
+    .btn {
+      padding: 0.85rem 1.6rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,255,157,0.25);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: rgba(255,77,109,0.1);
+    }
+
+    .btn-sm {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.75rem;
+    }
+
+    /* ── CODE DISPLAY ── */
+    .code-display {
+      display: none;
+      margin-top: 1.2rem;
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 1.4rem;
+      text-align: center;
+      box-shadow: var(--glow);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .code-display.show { display: block; }
+
+    .code-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .code-value {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 20px rgba(0,255,157,0.4);
+    }
+
+    .code-hint {
+      margin-top: 0.6rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* ── SESSIONS LIST ── */
+    .sessions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .session-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .session-item:hover { border-color: var(--border); }
+
+    .session-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .session-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      flex-shrink: 0;
+    }
+
+    .session-dot.offline {
+      background: var(--muted);
+      box-shadow: none;
+    }
+
+    .session-id {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .session-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── TOAST ── */
+    #toast-wrap {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      color: var(--text);
+      animation: slideIn 0.3s ease both;
+      max-width: 280px;
+    }
+
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+    .toast.warn  { border-color: var(--warn); color: var(--warn); }
+
+    /* ── LOADER ── */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(0,255,157,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
+      50%       { opacity: 0.5; box-shadow: 0 0 4px var(--accent); }
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* delay stagger */
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.12s; }
+    .card:nth-child(3) { animation-delay: 0.18s; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="logo-name">Inconnu Bot</div>
+      <div class="logo-sub">SHINIGAMI-MD · Baileys Multi-Session</div>
+    </div>
+  </div>
+  <div class="status-badge" id="header-status">● ONLINE</div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-tag">// WhatsApp Bot Manager</div>
+    <h1>Gérez vos<br/><span>sessions</span> facilement</h1>
+    <p>Connectez votre WhatsApp via code de couplage. Aucun QR code nécessaire.</p>
+  </section>
+
+  <!-- Pair Card -->
+  <div class="card">
+    <div class="card-title">⚡ Obtenir un code de connexion</div>
+    <div class="pair-form">
+      <input
+        type="tel"
+        id="phone-input"
+        placeholder="Numéro sans + (ex: 22890123456)"
+        maxlength="15"
+        inputmode="numeric"
+      />
+      <button class="btn btn-primary" id="pair-btn" onclick="requestPair()">
+        Générer le code
+      </button>
+    </div>
+    <div class="code-display" id="code-display">
+      <div class="code-label">Code de couplage</div>
+      <div class="code-value" id="code-value">——————————</div>
+      <div class="code-hint">Allez dans WhatsApp → Appareils liés → Lier avec code</div>
+    </div>
+  </div>
+
+  <!-- Sessions Card -->
+  <div class="card">
+    <div class="card-title">📡 Sessions actives</div>
+    <div class="sessions-list" id="sessions-list">
+      <div class="empty-state">Chargement...</div>
+    </div>
+    <div style="margin-top:1rem; display:flex; justify-content:flex-end;">
+      <button class="btn btn-primary btn-sm" onclick="loadSessions()">↻ Actualiser</button>
+    </div>
+  </div>
+</main>
+
+<footer>© INCONNU BOY · SHINIGAMI-MD · Baileys</footer>
+
+<div id="toast-wrap"></div>
+
+<script>
+  // ── TOAST ──
+  function toast(msg, type = '') {
+    const wrap = document.getElementById('toast-wrap');
+    const el = document.createElement('div');
+    el.className = 'toast ' + type;
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  // ── PAIR ──
+  async function requestPair() {
+    const raw = document.getElementById('phone-input').value.trim().replace(/\D/g, '');
+    if (!raw || raw.length < 6) {
+      toast('Numéro invalide', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('pair-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Génération...';
+
+    const display = document.getElementById('code-display');
+    const codeEl  = document.getElementById('code-value');
+    display.classList.remove('show');
+
+    try {
+      const res  = await fetch(`/pair/${raw}/`);
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Erreur serveur');
+
+      const formatted = String(data.code).replace(/\s+/g,'').match(/.{1,4}/g)?.join('-') || data.code;
+      codeEl.textContent = formatted;
+      display.classList.add('show');
+      toast('Code généré ! Entrez-le dans WhatsApp.', '');
+      loadSessions();
+    } catch (e) {
+      toast(e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Générer le code';
+    }
+  }
+
+  // ── SESSIONS ──
+  async function loadSessions() {
+    const list = document.getElementById('sessions-list');
+    try {
+      const res  = await fetch('/sessions');
+      const data = await res.json();
+      const sessions = data.sessions || [];
+
+      if (!sessions.length) {
+        list.innerHTML = '<div class="empty-state">// Aucune session active</div>';
+        return;
+      }
+
+      list.innerHTML = sessions.map(s => `
+        <div class="session-item" id="sess-${s.id}">
+          <div class="session-info">
+            <div class="session-dot ${s.connected ? '' : 'offline'}"></div>
+            <span class="session-id">${s.id}</span>
+          </div>
+          <div class="session-actions">
+            <button class="btn btn-sm btn-danger" onclick="logoutSession('${s.id}')">Déconnecter</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      list.innerHTML = '<div class="empty-state" style="color:#ff4d6d">// Erreur de chargement</div>';
+    }
+  }
+
+  async function logoutSession(id) {
+    if (!confirm(`Déconnecter la session ${id} ?`)) return;
+    try {
+      const res  = await fetch(`/logout/${id}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        toast(`Session ${id} déconnectée.`);
+        loadSessions();
+      } else {
+        toast(data.error || 'Erreur', 'error');
+      }
+    } catch (e) {
+      toast(e.message, 'error');
+    }
+  }
+
+  // ── INPUT: only digits ──
+  document.getElementById('phone-input').addEventListener('keypress', (e) => {
+    if (!/[0-9]/.test(e.key)) e.preventDefault();
+    if (e.key === 'Enter') requestPair();
+  });
+
+  // ── INIT ──
+  loadSessions();
+  setInterval(loadSessions, 30000);
+</script>
+</body>
+</html>
