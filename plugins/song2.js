@@ -1,13 +1,14 @@
-const axios = require("axios");
-const yts = require("yt-search");
-const { getBuffer } = require("../../lib/handier");
-const { fetchJson } = require("i-nrl");
+import axios from "axios";
+import yts from "yt-search";
+import { getBuffer } from "../lib/handier.js";
+import { fetchJson } from "i-nrl";
+import { Module } from "../lib/plugins.js";
 
 /* =========================
    SONG MODULE
 ========================= */
 Module({
-  command: "song",
+  command: "song3",
   package: "downloader",
   description: "Download audio from YouTube",
 })(async (message, match) => {
