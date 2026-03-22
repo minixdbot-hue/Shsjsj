@@ -436,7 +436,10 @@ Module({ on: "group-participants.update" })(async (_msg, event, conn) => {
       else if (action === "add" || action === "invite" || action === "joined") {
         const key = `group:${groupJid}:welcome`;
         const cfgRaw = await db.getAsync(botNumber, key, null);
-        const enabled = cfgRaw && typeof cfgRaw === "object" ? toBool(cfgRaw.status) : true;
+        let enabled = true;
+        if (cfgRaw !== null && cfgRaw !== undefined) {
+          enabled = typeof cfgRaw === "object" ? toBool(cfgRaw.status) : toBool(cfgRaw);
+        }
         
         if (!enabled) continue;
         
@@ -469,7 +472,10 @@ Module({ on: "group-participants.update" })(async (_msg, event, conn) => {
       else if (action === "remove" || action === "leave" || action === "left" || action === "kicked") {
         const key = `group:${groupJid}:goodbye`;
         const cfgRaw = await db.getAsync(botNumber, key, null);
-        const enabled = cfgRaw && typeof cfgRaw === "object" ? toBool(cfgRaw.status) : true;
+        let enabled = true;
+        if (cfgRaw !== null && cfgRaw !== undefined) {
+          enabled = typeof cfgRaw === "object" ? toBool(cfgRaw.status) : toBool(cfgRaw);
+        }
         
         if (!enabled) continue;
         
