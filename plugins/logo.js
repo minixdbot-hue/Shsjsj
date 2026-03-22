@@ -1,6 +1,54 @@
 // plugins/logo.js
-import mumaker from "mumaker";
+import axios from "axios";
+import * as cheerio from "cheerio";
 import { Module } from "../lib/plugins.js";
+
+// ─────────────────────────────────────────────
+//  ephoto360 scraper (replaces mumaker)
+// ─────────────────────────────────────────────
+async function ephoto(url, text) {
+  const { data: html } = await axios.get(url, {
+    headers: { "User-Agent": "Mozilla/5.0" },
+    timeout: 15000,
+  });
+  const $ = cheerio.load(html);
+
+  // Find the form and build POST body
+  const formData = new URLSearchParams();
+  $("form input, form textarea").each((_, el) => {
+    const name = $(el).attr("name");
+    const val = $(el).attr("value") || "";
+    if (!name) return;
+    if ($(el).attr("type") === "submit") return;
+    // Replace text fields with user input
+    if ($(el).attr("type") === "text" || el.tagName === "textarea") {
+      formData.append(name, text);
+    } else {
+      formData.append(name, val);
+    }
+  });
+
+  const action = $("form").attr("action") || url;
+  const { data: result } = await axios.post(action, formData.toString(), {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": "Mozilla/5.0",
+      Referer: url,
+    },
+    timeout: 30000,
+  });
+
+  const $r = cheerio.load(result);
+  // Try common selectors for the output image
+  const imgSrc =
+    $r(".image-result img").attr("src") ||
+    $r("#result img").attr("src") ||
+    $r("img.output").attr("src") ||
+    $r(".result img").attr("src");
+
+  if (!imgSrc) throw new Error("Image not found in ephoto360 response");
+  return { image: imgSrc };
+}
 
 // ─────────────────────────────────────────────
 //  Helper générique pour tous les logos
@@ -20,7 +68,7 @@ function createLogoModule({ command, emoji, label, url }) {
     try {
       await message.react("⏳");
 
-      const result = await mumaker.ephoto(url, match.trim());
+      const result = await ephoto(url, match.trim());
 
       await message.send({
         image: { url: result.image },
