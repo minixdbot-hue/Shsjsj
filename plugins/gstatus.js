@@ -1,5 +1,5 @@
 import { Module } from "../lib/plugins.js";
-import { getSettings } from "../config.js";
+import config from "../config.js";
 
 Module({
   command: "gstatus",
@@ -13,8 +13,7 @@ Module({
 
   try {
     // 🔹 Load config (CLEAN)
-    const settings = await getSettings();
-    const botname = settings?.botname || "𝙼𝙸𝙽𝙸 𝙸𝙽𝙲𝙾𝙽𝙽𝚄 𝚇𝙳";
+    const botname = config?.botname || "𝙼𝙸𝙽𝙸 𝙸𝙽𝙲𝙾𝙽𝙽𝚄 𝚇𝙳";
 
     // 🔒 Checks
     if (!IsGroup)
