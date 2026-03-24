@@ -23,14 +23,21 @@ function extractNumber(match, quoted) {
 }
 
 function isOwner(senderJid) {
-  const ownerRaw = config.owner || '';
-  const ownerJid = jidNormalizedUser(`${ownerRaw.replace(/[^0-9]/g, '')}@s.whatsapp.net`);
-  return senderJid === ownerJid;
+  const ownerRaw = (config.owner || '').replace(/[^0-9]/g, '');
+  if (!ownerRaw) return false;
+  // compare numéros bruts pour éviter les problèmes multi-device
+  const senderNum = (senderJid || '').split('@')[0].replace(/[^0-9]/g, '');
+  return senderNum === ownerRaw;
 }
 
 function isSudo(senderJid) {
+  const senderNum = (senderJid || '').split('@')[0].replace(/[^0-9]/g, '');
+  // vérifier config.sudo
+  const sudoRaw = (config.sudo || '').replace(/[^0-9]/g, '');
+  if (sudoRaw && senderNum === sudoRaw) return true;
+  // vérifier la liste sudo en DB
   const list = db.get(GLOBAL_SESSION, 'sudo_list', []);
-  return Array.isArray(list) && list.includes(senderJid);
+  return Array.isArray(list) && list.some(j => (j || '').split('@')[0].replace(/[^0-9]/g, '') === senderNum);
 }
 
 function isOwnerOrSudo(senderJid) {
@@ -71,7 +78,7 @@ Module({
   package: 'owner',
   description: 'Add a user as sudo (owner-only)',
 })(async (message, match) => {
-  const sender = jidNormalizedUser(message.sender);
+  const sender = message.sender || message.from || "";
 
   if (!isOwner(sender)) {
     return reply(message, `⛔ Access denied. Only the bot owner can use this command.`);
@@ -104,7 +111,7 @@ Module({
   package: 'owner',
   description: 'Remove a user from sudo list (owner-only)',
 })(async (message, match) => {
-  const sender = jidNormalizedUser(message.sender);
+  const sender = message.sender || message.from || "";
 
   if (!isOwner(sender)) {
     return reply(message, `⛔ Access denied. Only the bot owner can use this command.`);
@@ -134,7 +141,7 @@ Module({
   package: 'owner',
   description: 'List all sudo users',
 })(async (message, match) => {
-  const sender = jidNormalizedUser(message.sender);
+  const sender = message.sender || message.from || "";
 
   if (!isOwnerOrSudo(sender)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can use this command.`);
@@ -158,7 +165,7 @@ Module({
   package: 'owner',
   description: 'Ban a user from using the bot (owner/sudo only)',
 })(async (message, match) => {
-  const sender = jidNormalizedUser(message.sender);
+  const sender = message.sender || message.from || "";
 
   if (!isOwnerOrSudo(sender)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can ban users.`);
@@ -195,7 +202,7 @@ Module({
   package: 'owner',
   description: 'Unban a user (owner/sudo only)',
 })(async (message, match) => {
-  const sender = jidNormalizedUser(message.sender);
+  const sender = message.sender || message.from || "";
 
   if (!isOwnerOrSudo(sender)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can unban users.`);
@@ -225,7 +232,7 @@ Module({
   package: 'owner',
   description: 'List all banned users (owner/sudo only)',
 })(async (message, match) => {
-  const sender = jidNormalizedUser(message.sender);
+  const sender = message.sender || message.from || "";
 
   if (!isOwnerOrSudo(sender)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can view the ban list.`);
