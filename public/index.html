@@ -1,582 +1,730 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INCONNU BOT — Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>INCONNU XD WHATSAPP BOT</title>
+  <!-- Google Fonts + Font Awesome 6 (free) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     :root {
-      --bg: #080b10;
-      --surface: #0d1117;
-      --border: #1e2733;
-      --accent: #00ff9d;
-      --accent2: #00c97a;
-      --text: #e0e8f0;
-      --muted: #4a5568;
-      --danger: #ff4d6d;
-      --warn: #ffb347;
-      --glow: 0 0 20px rgba(0,255,157,0.15);
+      --bg-deep: #0a0c12;
+      --bg-surface: #11141c;
+      --bg-elevated: #181e2a;
+      --border-glow: rgba(0, 255, 196, 0.2);
+      --accent-primary: #0ef0c0;
+      --accent-secondary: #4c9aff;
+      --accent-danger: #ff5e7e;
+      --text-primary: #f0f3fa;
+      --text-secondary: #9aa4bf;
+      --text-muted: #5e6a87;
+      --shadow-xl: 0 25px 40px -12px rgba(0, 0, 0, 0.6);
+      --glass-bg: rgba(17, 20, 28, 0.75);
     }
-
-    html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Syne', sans-serif;
+      background: radial-gradient(circle at 20% 30%, #0c0f18, #07090f);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+      line-height: 1.5;
       min-height: 100vh;
-      overflow-x: hidden;
+      backdrop-filter: blur(2px);
     }
 
-    /* ── GRID BACKGROUND ── */
+    /* animated noise / grain */
     body::before {
-      content: '';
+      content: "";
       position: fixed;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(0,255,157,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,157,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+      opacity: 0.3;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── HEADER ── */
-    header {
+    /* modern container */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1.8rem 2rem 3rem;
       position: relative;
-      z-index: 10;
+      z-index: 2;
+    }
+
+    /* header */
+    .navbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.4rem 2.5rem;
-      border-bottom: 1px solid var(--border);
-      background: rgba(8,11,16,0.85);
-      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(14, 240, 192, 0.2);
     }
 
-    .logo {
+    .logo-area {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 12px;
     }
 
-    .logo-dot {
-      width: 10px; height: 10px;
-      background: var(--accent);
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-primary), #1e88e5);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(14, 240, 192, 0.4);
+    }
+
+    .logo-icon i {
+      font-size: 1.6rem;
+      color: #0a0c12;
+    }
+
+    .logo-text h2 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #ffffff, var(--accent-primary));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .logo-text p {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .status-chip {
+      background: rgba(14, 240, 192, 0.12);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(14, 240, 192, 0.3);
+      border-radius: 60px;
+      padding: 0.45rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .status-led {
+      width: 8px;
+      height: 8px;
+      background: #0ef0c0;
       border-radius: 50%;
-      box-shadow: 0 0 12px var(--accent);
-      animation: pulse 2s infinite;
+      box-shadow: 0 0 6px #0ef0c0;
+      animation: pulse-led 1.8s infinite;
     }
 
-    .logo-name {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      text-transform: uppercase;
+    @keyframes pulse-led {
+      0% { opacity: 0.5; transform: scale(0.9);}
+      100% { opacity: 1; transform: scale(1.2);}
     }
 
-    .logo-sub {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
+    /* dashboard grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.8rem;
+      margin-top: 0.5rem;
     }
 
-    .status-badge {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.3rem 0.8rem;
-      border: 1px solid var(--accent);
-      border-radius: 2rem;
-      color: var(--accent);
-      letter-spacing: 0.05em;
-      opacity: 0.8;
+    @media (max-width: 860px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
+      }
+      .container {
+        padding: 1rem 1.2rem 2rem;
+      }
     }
 
-    /* ── MAIN LAYOUT ── */
-    main {
-      position: relative;
-      z-index: 1;
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 4rem;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      text-align: center;
-      padding: 3rem 0 3.5rem;
-      animation: fadeUp 0.7s ease both;
-    }
-
-    .hero-tag {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 1.2rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.2rem, 6vw, 3.8rem);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
-
-    .hero h1 span {
-      color: var(--accent);
-      text-shadow: 0 0 30px rgba(0,255,157,0.3);
-    }
-
-    .hero p {
-      color: var(--muted);
-      font-size: 0.95rem;
-      max-width: 440px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* ── CARD ── */
+    /* cards modern */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      animation: fadeUp 0.7s ease both;
-      transition: border-color 0.3s;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 32px;
+      box-shadow: var(--shadow-xl);
+      transition: transform 0.2s ease, border-color 0.2s;
+      overflow: hidden;
     }
 
-    .card:hover { border-color: rgba(0,255,157,0.2); }
-
-    .card-title {
-      font-size: 0.7rem;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 1.4rem;
+    .card-header {
+      padding: 1.5rem 1.8rem 0.5rem 1.8rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .card-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* ── PAIR FORM ── */
-    .pair-form {
+    .card-header h3 {
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: -0.2px;
       display: flex;
-      gap: 0.75rem;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-header h3 i {
+      color: var(--accent-primary);
+      font-size: 1.2rem;
+    }
+
+    .card-body {
+      padding: 1.6rem 1.8rem 2rem 1.8rem;
+    }
+
+    /* pairing form */
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .phone-input-wrapper {
+      display: flex;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    .pair-form input {
-      flex: 1;
-      min-width: 200px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.85rem 1.1rem;
-      color: var(--text);
-      font-family: 'Space Mono', monospace;
+    .phone-input-wrapper input {
+      flex: 2;
+      background: #0b0e16;
+      border: 1px solid #252d3a;
+      border-radius: 24px;
+      padding: 0.9rem 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.9rem;
+      color: var(--text-primary);
       outline: none;
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-
-    .pair-form input:focus {
-      border-color: var(--accent);
-      box-shadow: var(--glow);
-    }
-
-    .pair-form input::placeholder { color: var(--muted); }
-
-    .btn {
-      padding: 0.85rem 1.6rem;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
       transition: all 0.2s;
-      white-space: nowrap;
+    }
+
+    .phone-input-wrapper input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(14, 240, 192, 0.2);
     }
 
     .btn-primary {
-      background: var(--accent);
-      color: #000;
+      background: linear-gradient(105deg, #0ef0c0, #0ac8a3);
+      border: none;
+      border-radius: 40px;
+      padding: 0 1.8rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      color: #0a0c12;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
     }
 
     .btn-primary:hover {
-      background: var(--accent2);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0,255,157,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -8px rgba(14, 240, 192, 0.5);
     }
 
-    .btn-primary:active { transform: translateY(0); }
-
-    .btn-danger {
-      background: transparent;
-      color: var(--danger);
-      border: 1px solid var(--danger);
+    .code-panel {
+      margin-top: 1.6rem;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 28px;
+      padding: 1rem 1.5rem;
+      border: 1px solid rgba(14, 240, 192, 0.25);
+      transition: all 0.2s;
     }
 
-    .btn-danger:hover {
-      background: rgba(255,77,109,0.1);
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
     }
-
-    .btn-sm {
-      padding: 0.45rem 0.9rem;
-      font-size: 0.75rem;
-    }
-
-    /* ── CODE DISPLAY ── */
-    .code-display {
-      display: none;
-      margin-top: 1.2rem;
-      background: var(--bg);
-      border: 1px solid var(--accent);
-      border-radius: 10px;
-      padding: 1.4rem;
-      text-align: center;
-      box-shadow: var(--glow);
-      animation: fadeUp 0.4s ease both;
-    }
-
-    .code-display.show { display: block; }
 
     .code-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      color: var(--muted);
+      font-size: 0.7rem;
       text-transform: uppercase;
-      margin-bottom: 0.6rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.1s;
+    }
+
+    .copy-btn:hover {
+      color: var(--accent-primary);
     }
 
     .code-value {
-      font-family: 'Space Mono', monospace;
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: 0.15em;
-      text-shadow: 0 0 20px rgba(0,255,157,0.4);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      word-break: break-all;
+      color: var(--accent-primary);
+      text-shadow: 0 0 6px rgba(14, 240, 192, 0.3);
     }
 
-    .code-hint {
-      margin-top: 0.6rem;
-      font-size: 0.72rem;
-      color: var(--muted);
+    .hint-text {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 10px;
     }
 
-    /* ── SESSIONS LIST ── */
-    .sessions-list {
+    /* session list */
+    .sessions-container {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 12px;
     }
 
-    .session-item {
+    .session-row {
+      background: rgba(10, 12, 18, 0.7);
+      border-radius: 20px;
+      padding: 0.9rem 1.2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.8rem 1rem;
-      transition: border-color 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s;
     }
 
-    .session-item:hover { border-color: var(--border); }
+    .session-row:hover {
+      border-color: rgba(14, 240, 192, 0.3);
+      background: rgba(14, 240, 192, 0.02);
+    }
 
     .session-info {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 14px;
     }
 
-    .session-dot {
-      width: 7px; height: 7px;
+    .status-badge {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
-      flex-shrink: 0;
+      background: #0ef0c0;
+      box-shadow: 0 0 6px #0ef0c0;
     }
 
-    .session-dot.offline {
-      background: var(--muted);
+    .status-badge.offline {
+      background: #5e6a87;
       box-shadow: none;
     }
 
     .session-id {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 0.85rem;
+      background: rgba(14, 240, 192, 0.1);
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
     }
 
-    .session-actions {
-      display: flex;
-      gap: 0.4rem;
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 94, 126, 0.6);
+      color: #ff5e7e;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 94, 126, 0.15);
+      border-color: #ff5e7e;
     }
 
     .empty-state {
       text-align: center;
       padding: 2rem;
-      color: var(--muted);
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-style: italic;
     }
 
-    /* ── TOAST ── */
-    #toast-wrap {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      z-index: 999;
+    .refresh-row {
+      margin-top: 1.2rem;
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      pointer-events: none;
+      justify-content: flex-end;
     }
 
-    .toast {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.72rem;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      border-left: 3px solid var(--accent);
-      background: var(--surface);
-      color: var(--text);
-      animation: slideIn 0.3s ease both;
-      max-width: 280px;
+    .icon-btn {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid #252d3a;
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-secondary);
     }
 
-    .toast.error { border-color: var(--danger); color: var(--danger); }
-    .toast.warn  { border-color: var(--warn); color: var(--warn); }
-
-    /* ── LOADER ── */
-    .spinner {
-      display: inline-block;
-      width: 14px; height: 14px;
-      border: 2px solid rgba(0,255,157,0.2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
+    .icon-btn i {
       margin-right: 6px;
     }
 
-    /* ── FOOTER ── */
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      position: relative;
-      z-index: 1;
+    .icon-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
     }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* toast container */
+    .toast-stack {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: #11141cee;
+      backdrop-filter: blur(12px);
+      border-left: 3px solid var(--accent-primary);
+      padding: 12px 18px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #eef2ff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      animation: slideIn 0.25s ease;
+      font-family: 'Inter', monospace;
+    }
+
+    .toast.error {
+      border-left-color: var(--accent-danger);
     }
 
     @keyframes slideIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
-      50%       { opacity: 0.5; box-shadow: 0 0 4px var(--accent); }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 2rem;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
 
-    /* delay stagger */
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.12s; }
-    .card:nth-child(3) { animation-delay: 0.18s; }
+    .spinner-sm {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(0,0,0,0.2);
+      border-top-color: #0a0c12;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">
-    <div class="logo-dot"></div>
-    <div>
-      <div class="logo-name">Inconnu Bot</div>
-      <div class="logo-sub">SHINIGAMI-MD · Baileys Multi-Session</div>
+<div class="container">
+  <!-- modern navbar -->
+  <div class="navbar">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <div class="logo-text">
+        <h2>INCONNU XD V2</h2>
+        <p>managed · multi‑session core</p>
+      </div>
     </div>
-  </div>
-  <div class="status-badge" id="header-status">● ONLINE</div>
-</header>
-
-<main>
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-tag">// WhatsApp Bot Manager</div>
-    <h1>Gérez vos<br/><span>sessions</span> facilement</h1>
-    <p>Connectez votre WhatsApp via code de couplage. Aucun QR code nécessaire.</p>
-  </section>
-
-  <!-- Pair Card -->
-  <div class="card">
-    <div class="card-title">⚡ Obtenir un code de connexion</div>
-    <div class="pair-form">
-      <input
-        type="tel"
-        id="phone-input"
-        placeholder="Numéro sans + (ex: 22890123456)"
-        maxlength="15"
-        inputmode="numeric"
-      />
-      <button class="btn btn-primary" id="pair-btn" onclick="requestPair()">
-        Générer le code
-      </button>
-    </div>
-    <div class="code-display" id="code-display">
-      <div class="code-label">Code de couplage</div>
-      <div class="code-value" id="code-value">——————————</div>
-      <div class="code-hint">Allez dans WhatsApp → Appareils liés → Lier avec code</div>
+    <div class="status-chip">
+      <span class="status-led"></span>
+      <span>SRSSION ACTIVE</span>
+      <i class="fas fa-shield-alt" style="font-size: 0.7rem; margin-left: 4px;"></i>
     </div>
   </div>
 
-  <!-- Sessions Card -->
-  <div class="card">
-    <div class="card-title">📡 Sessions actives</div>
-    <div class="sessions-list" id="sessions-list">
-      <div class="empty-state">Chargement...</div>
+  <div class="dashboard-grid">
+    <!-- LEFT CARD: Pairing Station -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-link"></i> Quick Pairing</h3>
+        <i class="fas fa-qrcode" style="color: var(--accent-primary); opacity: 0.6;"></i>
+      </div>
+      <div class="card-body">
+        <div class="input-group">
+          <span class="input-label"><i class="fas fa-phone-alt"></i> INSTANCE PHONE NUMBER</span>
+          <div class="phone-input-wrapper">
+            <input type="text" id="phoneNumber" placeholder="e.g., 22890123456" maxlength="15" inputmode="numeric" autocomplete="off">
+            <button class="btn-primary" id="pairBtn"><i class="fas fa-key"></i> Generate code</button>
+          </div>
+        </div>
+
+        <!-- Dynamic pairing code panel -->
+        <div id="codePanel" style="display: none;" class="code-panel">
+          <div class="code-header">
+            <span class="code-label"><i class="fas fa-lock-open"></i> PAIRING CODE</span>
+            <button class="copy-btn" id="copyCodeBtn"><i class="far fa-copy"></i> Copy</button>
+          </div>
+          <div class="code-value" id="codeValue">——————</div>
+          <div class="hint-text">
+            <i class="fas fa-mobile-alt"></i> WhatsApp → Linked Devices → Link with phone number → Enter this code
+          </div>
+        </div>
+        <div class="hint-text" style="margin-top: 1rem; font-size:0.7rem">
+          <i class="fas fa-globe"></i> Secure pairing over cloud infrastructure. Code valid for short period.
+        </div>
+      </div>
     </div>
-    <div style="margin-top:1rem; display:flex; justify-content:flex-end;">
-      <button class="btn btn-primary btn-sm" onclick="loadSessions()">↻ Actualiser</button>
+
+    <!-- RIGHT CARD: Sessions & Instances -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fas fa-server"></i> Active Sessions</h3>
+        <span id="sessionCountBadge" style="background: #0ef0c120; padding: 4px 8px; border-radius: 30px; font-size: 0.7rem;">0</span>
+      </div>
+      <div class="card-body">
+        <div id="sessionsList" class="sessions-container">
+          <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> loading fleet...</div>
+        </div>
+        <div class="refresh-row">
+          <button id="refreshSessionsBtn" class="icon-btn"><i class="fas fa-sync-alt"></i> Refresh instances</button>
+        </div>
+      </div>
     </div>
   </div>
-</main>
+  <footer>
+    <i class="fas fa-cube"></i> NEXUS BOT HOST · High availability cluster · end‑to‑end encrypted sessions
+  </footer>
+</div>
 
-<footer>© INCONNU BOY · SHINIGAMI-MD · Baileys</footer>
-
-<div id="toast-wrap"></div>
+<div id="toastRoot" class="toast-stack"></div>
 
 <script>
-  // ── TOAST ──
-  function toast(msg, type = '') {
-    const wrap = document.getElementById('toast-wrap');
-    const el = document.createElement('div');
-    el.className = 'toast ' + type;
-    el.textContent = msg;
-    wrap.appendChild(el);
-    setTimeout(() => el.remove(), 3500);
+  // ---------- HELPER: TOAST ----------
+  function showToast(message, type = "info") {
+    const root = document.getElementById("toastRoot");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type === "error" ? "error" : ""}`;
+    toast.innerHTML = `<i class="fas ${type === "error" ? "fa-circle-exclamation" : "fa-circle-info"}" style="margin-right: 8px;"></i> ${message}`;
+    root.appendChild(toast);
+    setTimeout(() => {
+      toast.remove();
+    }, 3800);
   }
 
-  // ── PAIR ──
-  async function requestPair() {
-    const raw = document.getElementById('phone-input').value.trim().replace(/\D/g, '');
-    if (!raw || raw.length < 6) {
-      toast('Numéro invalide', 'error');
+  // ---------- API calls (same endpoints) ----------
+  async function requestPairCode() {
+    const inputEl = document.getElementById("phoneNumber");
+    let rawNumber = inputEl.value.trim().replace(/\D/g, '');
+    if (!rawNumber || rawNumber.length < 6) {
+      showToast("Invalid phone number. Use digits only (e.g., 22890123456)", "error");
       return;
     }
 
-    const btn = document.getElementById('pair-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Génération...';
-
-    const display = document.getElementById('code-display');
-    const codeEl  = document.getElementById('code-value');
-    display.classList.remove('show');
+    const pairBtn = document.getElementById("pairBtn");
+    const originalText = pairBtn.innerHTML;
+    pairBtn.disabled = true;
+    pairBtn.innerHTML = '<span class="spinner-sm"></span> Generating...';
 
     try {
-      const res  = await fetch(`/pair/${raw}/`);
-      const data = await res.json();
-
-      if (!res.ok || !data.ok) throw new Error(data.error || 'Erreur serveur');
-
-      const formatted = String(data.code).replace(/\s+/g,'').match(/.{1,4}/g)?.join('-') || data.code;
-      codeEl.textContent = formatted;
-      display.classList.add('show');
-      toast('Code généré ! Entrez-le dans WhatsApp.', '');
+      const response = await fetch(`/pair/${rawNumber}/`);
+      const data = await response.json();
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || "Pairing request failed");
+      }
+      let rawCode = String(data.code);
+      // format with dashes every 4 chars for readability
+      let formattedCode = rawCode.replace(/\s+/g,'');
+      formattedCode = formattedCode.match(/.{1,4}/g)?.join('-') || rawCode;
+      const codePanel = document.getElementById("codePanel");
+      const codeValueSpan = document.getElementById("codeValue");
+      codeValueSpan.innerText = formattedCode;
+      codePanel.style.display = "block";
+      showToast(`Pairing code generated: ${formattedCode}`, "info");
+      // auto refresh sessions after pairing
       loadSessions();
-    } catch (e) {
-      toast(e.message, 'error');
+    } catch (err) {
+      showToast(err.message || "Could not generate pairing code", "error");
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Générer le code';
+      pairBtn.disabled = false;
+      pairBtn.innerHTML = originalText;
     }
   }
 
-  // ── SESSIONS ──
-  async function loadSessions() {
-    const list = document.getElementById('sessions-list');
+  // copy code to clipboard
+  async function copyPairCode() {
+    const codeSpan = document.getElementById("codeValue");
+    const codeText = codeSpan.innerText.replace(/-/g, '');
+    if (!codeText || codeText === "——————") {
+      showToast("No active code to copy", "error");
+      return;
+    }
     try {
-      const res  = await fetch('/sessions');
+      await navigator.clipboard.writeText(codeText);
+      showToast("Code copied to clipboard", "info");
+    } catch (e) {
+      showToast("Could not copy", "error");
+    }
+  }
+
+  // ---------- LOAD SESSIONS ----------
+  async function loadSessions() {
+    const container = document.getElementById("sessionsList");
+    const countBadge = document.getElementById("sessionCountBadge");
+    try {
+      const res = await fetch("/sessions");
       const data = await res.json();
       const sessions = data.sessions || [];
-
-      if (!sessions.length) {
-        list.innerHTML = '<div class="empty-state">// Aucune session active</div>';
+      if (!Array.isArray(sessions) || sessions.length === 0) {
+        container.innerHTML = `<div class="empty-state"><i class="fas fa-database"></i> No active sessions. Create one using pairing.</div>`;
+        countBadge.innerText = "0";
         return;
       }
-
-      list.innerHTML = sessions.map(s => `
-        <div class="session-item" id="sess-${s.id}">
-          <div class="session-info">
-            <div class="session-dot ${s.connected ? '' : 'offline'}"></div>
-            <span class="session-id">${s.id}</span>
+      countBadge.innerText = sessions.length;
+      container.innerHTML = sessions.map(sess => {
+        const isOnline = sess.connected === true;
+        return `
+          <div class="session-row" data-id="${sess.id}">
+            <div class="session-info">
+              <div class="status-badge ${!isOnline ? 'offline' : ''}"></div>
+              <span class="session-id">${escapeHtml(sess.id)}</span>
+              <span style="font-size:0.7rem; color:${isOnline ? '#0ef0c0' : '#6c7a91'};">${isOnline ? '● online' : '○ offline'}</span>
+            </div>
+            <button class="btn-outline logout-session" data-id="${sess.id}"><i class="fas fa-sign-out-alt"></i> Terminate</button>
           </div>
-          <div class="session-actions">
-            <button class="btn btn-sm btn-danger" onclick="logoutSession('${s.id}')">Déconnecter</button>
-          </div>
-        </div>
-      `).join('');
-    } catch (e) {
-      list.innerHTML = '<div class="empty-state" style="color:#ff4d6d">// Erreur de chargement</div>';
+        `;
+      }).join('');
+      // attach logout events dynamically
+      document.querySelectorAll('.logout-session').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const sessionId = btn.getAttribute('data-id');
+          logoutSession(sessionId);
+        });
+      });
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = `<div class="empty-state" style="color:#ff5e7e;"><i class="fas fa-exclamation-triangle"></i> Failed to fetch sessions</div>`;
+      countBadge.innerText = "?";
     }
   }
 
-  async function logoutSession(id) {
-    if (!confirm(`Déconnecter la session ${id} ?`)) return;
+  async function logoutSession(sessionId) {
+    if (!confirm(`Terminate session "${sessionId}"? This will disconnect the bot instance.`)) return;
     try {
-      const res  = await fetch(`/logout/${id}`, { method: 'POST' });
+      const res = await fetch(`/logout/${sessionId}`, { method: "POST" });
       const data = await res.json();
       if (data.ok) {
-        toast(`Session ${id} déconnectée.`);
+        showToast(`Session ${sessionId} terminated.`, "info");
         loadSessions();
       } else {
-        toast(data.error || 'Erreur', 'error');
+        throw new Error(data.error || "Logout failed");
       }
-    } catch (e) {
-      toast(e.message, 'error');
+    } catch (err) {
+      showToast(err.message, "error");
     }
   }
 
-  // ── INPUT: only digits ──
-  document.getElementById('phone-input').addEventListener('keypress', (e) => {
-    if (!/[0-9]/.test(e.key)) e.preventDefault();
-    if (e.key === 'Enter') requestPair();
-  });
+  // simple escape to avoid XSS
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
 
-  // ── INIT ──
-  loadSessions();
-  setInterval(loadSessions, 30000);
+  // ---------- auto-refresh & interval ----------
+  let refreshInterval;
+  function startAutoRefresh() {
+    if (refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => {
+      loadSessions();
+    }, 28000);
+  }
+
+  // ---------- initialize DOM events ----------
+  document.addEventListener("DOMContentLoaded", () => {
+    const pairBtn = document.getElementById("pairBtn");
+    const phoneInput = document.getElementById("phoneNumber");
+    const copyBtn = document.getElementById("copyCodeBtn");
+    const refreshBtn = document.getElementById("refreshSessionsBtn");
+
+    pairBtn.addEventListener("click", requestPairCode);
+    if (copyBtn) copyBtn.addEventListener("click", copyPairCode);
+    refreshBtn.addEventListener("click", () => {
+      loadSessions();
+      showToast("Refreshing session list", "info");
+    });
+
+    phoneInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") requestPairCode();
+      if (!/[0-9]/.test(e.key)) e.preventDefault();
+    });
+
+    // initial load
+    loadSessions();
+    startAutoRefresh();
+  });
 </script>
 </body>
 </html>
