@@ -17,15 +17,16 @@ const CTX = {
 // ─── Owner check ──────────────────────────────────────────────────────────────
 function isOwner(message) {
   try {
+    if (message.isFromMe) return true;
     const ownerRaw = (config.owner || "").replace(/[^0-9]/g, "");
     const sudoRaw  = (config.sudo  || "").replace(/[^0-9]/g, "");
     const sender   = (message.sender || message.from || "")
+      .split(":")[0]   // strip :XX device suffix
       .split("@")[0]
       .replace(/[^0-9]/g, "");
     return (
       (ownerRaw && sender === ownerRaw) ||
-      (sudoRaw  && sender === sudoRaw)  ||
-      message.isFromMe
+      (sudoRaw  && sender === sudoRaw)
     );
   } catch {
     return message.isFromMe;
