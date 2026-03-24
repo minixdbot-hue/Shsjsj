@@ -1,4 +1,3 @@
-
 import { Module } from "../lib/plugins.js";
 import config from "../config.js";
 import { jidNormalizedUser } from "@whiskeysockets/baileys";
@@ -19,9 +18,11 @@ function contextInfo() {
 
 function isOwner(senderJid) {
   const ownerRaw = (config.owner || "").replace(/[^0-9]/g, "");
-  if (!ownerRaw) return false;
-  const ownerJid = jidNormalizedUser(`${ownerRaw}@s.whatsapp.net`);
-  return senderJid === ownerJid;
+  const sudoRaw  = (config.sudo  || "").replace(/[^0-9]/g, "");
+  if (!ownerRaw && !sudoRaw) return false;
+  // strip device suffix :XX before comparing
+  const senderNum = (senderJid || "").split(":")[0].split("@")[0].replace(/[^0-9]/g, "");
+  return (ownerRaw && senderNum === ownerRaw) || (sudoRaw && senderNum === sudoRaw);
 }
 
 // ─── COMMAND ─────────────────────────────────────────────────────────────────
@@ -36,7 +37,7 @@ Module({
     const senderJid = jidNormalizedUser(message.sender || message.from || "");
 
     // Owner-only
-    if (!isOwner(senderJid) && !message.isfromMe) {
+    if (!isOwner(senderJid) && !message.isFromMe) {
       return message.conn.sendMessage(
         message.from,
         {
