@@ -25,22 +25,30 @@ function extractNumber(match, quoted) {
 function isOwner(senderJid) {
   const ownerRaw = (config.owner || '').replace(/[^0-9]/g, '');
   if (!ownerRaw) return false;
-  // compare numéros bruts pour éviter les problèmes multi-device
+  // compare raw numbers to avoid multi-device issues
   const senderNum = (senderJid || '').split('@')[0].replace(/[^0-9]/g, '');
   return senderNum === ownerRaw;
 }
 
+// Accepts a message object — returns true if sender is the global owner OR the session bot itself
+function isOwnerMsg(message) {
+  if (message.isFromMe) return true;
+  return isOwner(message.sender || message.from || '');
+}
+
 function isSudo(senderJid) {
   const senderNum = (senderJid || '').split('@')[0].replace(/[^0-9]/g, '');
-  // vérifier config.sudo
+  // check config.sudo
   const sudoRaw = (config.sudo || '').replace(/[^0-9]/g, '');
   if (sudoRaw && senderNum === sudoRaw) return true;
-  // vérifier la liste sudo en DB
+  // check sudo list in DB
   const list = db.get(GLOBAL_SESSION, 'sudo_list', []);
   return Array.isArray(list) && list.some(j => (j || '').split('@')[0].replace(/[^0-9]/g, '') === senderNum);
 }
 
-function isOwnerOrSudo(senderJid) {
+function isOwnerOrSudo(senderJid, message) {
+  // if caller passes a message object, also accept session owner (isFromMe)
+  if (message && message.isFromMe) return true;
   return isOwner(senderJid) || isSudo(senderJid);
 }
 
@@ -80,7 +88,7 @@ Module({
 })(async (message, match) => {
   const sender = message.sender || message.from || "";
 
-  if (!isOwner(sender)) {
+  if (!isOwnerMsg(message)) {
     return reply(message, `⛔ Access denied. Only the bot owner can use this command.`);
   }
 
@@ -113,7 +121,7 @@ Module({
 })(async (message, match) => {
   const sender = message.sender || message.from || "";
 
-  if (!isOwner(sender)) {
+  if (!isOwnerMsg(message)) {
     return reply(message, `⛔ Access denied. Only the bot owner can use this command.`);
   }
 
@@ -143,7 +151,7 @@ Module({
 })(async (message, match) => {
   const sender = message.sender || message.from || "";
 
-  if (!isOwnerOrSudo(sender)) {
+  if (!isOwnerOrSudo(sender, message)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can use this command.`);
   }
 
@@ -167,7 +175,7 @@ Module({
 })(async (message, match) => {
   const sender = message.sender || message.from || "";
 
-  if (!isOwnerOrSudo(sender)) {
+  if (!isOwnerOrSudo(sender, message)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can ban users.`);
   }
 
@@ -180,7 +188,7 @@ Module({
     return reply(message, `⚠️ You cannot ban the bot owner.`);
   }
 
-  if (isSudo(target) && !isOwner(sender)) {
+  if (isSudo(target) && !isOwnerMsg(message)) {
     return reply(message, `⚠️ Only the bot owner can ban a sudo user.`);
   }
 
@@ -204,7 +212,7 @@ Module({
 })(async (message, match) => {
   const sender = message.sender || message.from || "";
 
-  if (!isOwnerOrSudo(sender)) {
+  if (!isOwnerOrSudo(sender, message)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can unban users.`);
   }
 
@@ -234,7 +242,7 @@ Module({
 })(async (message, match) => {
   const sender = message.sender || message.from || "";
 
-  if (!isOwnerOrSudo(sender)) {
+  if (!isOwnerOrSudo(sender, message)) {
     return reply(message, `⛔ Access denied. Only the owner or sudo users can view the ban list.`);
   }
 
@@ -247,4 +255,56 @@ Module({
   const entries = list.map((jid, i) => `${i + 1}. @${jid.split('@')[0]}`).join('\n');
 
   return reply(message, `🚫 Ban list:\nTotal Banned Users: ${list.length}\n\n${entries}`);
+});
+
+// ─── NEWSLETTER ─────────────────────────────────────────────────────────────
+
+Module({
+  command: 'newsletter',
+  package: 'owner',
+  description: 'Send a newsletter channel link to all groups (owner only)',
+})(async (message, match) => {
+  if (!isOwnerMsg(message)) {
+    return reply(message, `⛔ Access denied. Only the bot owner can use this command.`);
+  }
+
+  const link = (match || '').trim();
+  if (!link || !link.startsWith('https://')) {
+    return reply(message, `❌ Usage: .newsletter <channel_link>\nExample: .newsletter https://whatsapp.com/channel/xxx`);
+  }
+
+  let groups = {};
+  try {
+    groups = await message.conn.groupFetchAllParticipating();
+  } catch (e) {
+    return reply(message, `❌ Failed to fetch groups: ${e?.message || e}`);
+  }
+
+  const groupIds = Object.keys(groups);
+  if (!groupIds.length) {
+    return reply(message, `⚠️ No groups found.`);
+  }
+
+  await reply(message, `📡 Sending newsletter to ${groupIds.length} groups...`);
+
+  let sent = 0;
+  let failed = 0;
+  for (const jid of groupIds) {
+    try {
+      await message.conn.sendMessage(jid, {
+        image: { url: 'https://i.postimg.cc/XvsZgKCb/IMG-20250731-WA0527.jpg' },
+        caption:
+          `📢 *Newsletter*\n\n` +
+          `Follow our official channel to stay updated with the latest news and features!\n\n` +
+          `🔗 ${link}`,
+        contextInfo: contextInfo(),
+      });
+      sent++;
+      await new Promise(r => setTimeout(r, 1200)); // anti-spam delay
+    } catch {
+      failed++;
+    }
+  }
+
+  return reply(message, `✅ Newsletter sent!\n📤 Sent: ${sent}\n❌ Failed: ${failed}\n📊 Total: ${groupIds.length}`);
 });
