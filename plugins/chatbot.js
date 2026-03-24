@@ -1,5 +1,6 @@
 import { Module } from "../lib/plugins.js";
 import { db } from "../lib/client.js";
+import config from "../config.js";
 import axios from "axios";
 
 // ─────────────────────────────────────────────
@@ -64,7 +65,10 @@ Module({
     await message.react("🤖");
 
     // Owner-only
-    const isOwner = message.isOwner || message.isSudo || message.isCreator;
+    const senderNum = (message.sender || message.from || "").split("@")[0].replace(/[^0-9]/g, "");
+    const ownerNum  = (config.owner || "").replace(/[^0-9]/g, "");
+    const sudoNum   = (config.sudo  || "").replace(/[^0-9]/g, "");
+    const isOwner   = message.isFromMe || (ownerNum && senderNum === ownerNum) || (sudoNum && senderNum === sudoNum);
     if (!isOwner) {
       return message.send("🚫 Only the owner can use this command.");
     }
