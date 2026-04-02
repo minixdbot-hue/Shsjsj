@@ -28,7 +28,7 @@
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@google/genai": "^1.40.0",
     "@hapi/boom": "^10.0.1",
-    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "@whiskeysockets/baileys": "npm:@alannxd/baileys",
     "anime-quiz": "^3.0.0",
     "axios": "^1.13.2",
     "body-parser": "^2.2.2",
